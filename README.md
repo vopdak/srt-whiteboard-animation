@@ -4,6 +4,83 @@
 
 适合把知识讲解、故事口播、课程字幕或短视频文案制作成暖米黄色纸张底的手绘动画。
 
+## Hướng dẫn nhanh
+
+### 1. Chuẩn bị project và asset
+
+Mỗi video cần một file JSON trong `input/` và các ảnh được tham chiếu trong `assets/`:
+
+```text
+input/
+└── inflation-explained.json
+
+assets/
+├── drawing-hand.png
+├── inflation/
+│   ├── shopper.png
+│   └── grocery-basket.png
+└── common/
+    └── arrow-up.png
+```
+
+Asset nên là PNG nền trong suốt, được cắt sát nội dung và có đủ độ phân giải cho video đầu ra. `assets/drawing-hand.png` là hình bàn tay dùng chung khi render.
+
+Trong project JSON:
+
+- `scenes[].segments[].ttsText` là lời thuyết minh.
+- `segments[].elementIds` liệt kê các element xuất hiện trong segment; ID phải tồn tại trong `scenes[].elements`.
+- Element `type: "image"` phải có `asset`, ví dụ `assets/inflation/shopper.png`. Chỉ dùng đường dẫn tương đối bắt đầu bằng `assets/`; không dùng đường dẫn tuyệt đối hoặc `..`.
+- Element `type: "text"` phải có `content`.
+- `position` hỗ trợ lưới 3×3: `top-left`, `top-center`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom-center`, `bottom-right`.
+- `size` nhận `small`, `medium` hoặc `large`; `sequence` quyết định thứ tự vẽ.
+
+Kiểm tra input trước khi render:
+
+```powershell
+python scripts/validate_projects.py
+```
+
+### 2. Chuẩn bị môi trường
+
+Trên Windows, tạo môi trường và cài dependency renderer:
+
+```powershell
+python scripts/prepare_env.py
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e services/kokoro/kokoro
+```
+
+Cài FFmpeg và mở terminal mới sau khi cài:
+
+```powershell
+winget install Gyan.FFmpeg
+ffmpeg -version
+```
+
+Kokoro có thể cần `espeak-ng` cho English fallback và một số ngôn ngữ.
+
+### 3. Chạy
+
+Terminal thứ nhất, kích hoạt môi trường và giữ Kokoro service tiếp tục chạy:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python services/kokoro/service.py
+```
+
+Terminal thứ hai, kích hoạt cùng môi trường và chạy toàn bộ pipeline:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python scripts/run_pipeline.py input/inflation-explained.json
+```
+
+Runner log `[START]`, `[OK]` hoặc `[FAILED]` cho từng bước. Video hoàn chỉnh được ghi tại:
+
+```text
+output/inflation-explained/final.mp4
+```
+
 ## 效果示例
 
 **场景：猴子山抢香蕉** —— 随着字幕的叙事顺序，依次绘制假山与小猴、抢香蕉的大猴，以及围观小朋友。
