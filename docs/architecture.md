@@ -29,7 +29,7 @@ input/project.json
 
 `scripts/validate_projects.py` đọc mọi file `.json` trực tiếp trong `input/`, kiểm tra cấu trúc project, quan hệ giữa segment và element, đồng thời xác minh asset ảnh nằm trong `assets/` và tồn tại.
 
-`scripts/generate_tts.py` chỉ xử lý project vượt qua validation. Script gọi Kokoro service local cho từng `ttsText`, đo số frame thực tế của WAV, ghép audio theo scene và toàn project, thêm `sceneEndPaddingMs`, rồi ghi `timeline.json`.
+`scripts/generate_tts.py` chỉ xử lý project vượt qua validation. Script gọi Kokoro service local cho từng `ttsText`, đo số frame thực tế của WAV, ghép audio theo scene và toàn project, thêm `sceneEndPaddingMs`, rồi ghi `timeline.json` và `subtitles.srt` có timestamp khớp với narration.
 
 `scripts/build_scenes.py` đọc project và timeline, bố trí image/text trên canvas bằng layout deterministic, rồi tạo PNG hoàn chỉnh và annotation tương thích với renderer hiện tại.
 

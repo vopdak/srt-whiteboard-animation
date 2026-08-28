@@ -56,6 +56,37 @@ def frames_to_ms(frame_count, sample_rate):
     return round(frame_count * 1000 / sample_rate)
 
 
+def srt_timestamp(milliseconds):
+    hours, remainder = divmod(milliseconds, 3_600_000)
+    minutes, remainder = divmod(remainder, 60_000)
+    seconds, milliseconds = divmod(remainder, 1_000)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d},{milliseconds:03d}"
+
+
+def write_subtitles(destination, project, timeline):
+    timeline_scenes = {scene["id"]: scene for scene in timeline["scenes"]}
+    entries = []
+    index = 1
+    for scene in project["scenes"]:
+        timeline_segments = {
+            segment["id"]: segment
+            for segment in timeline_scenes[scene["id"]]["segments"]
+        }
+        for segment in scene["segments"]:
+            timing = timeline_segments[segment["id"]]
+            entries.extend([
+                str(index),
+                f"{srt_timestamp(timing['startMs'])} --> {srt_timestamp(timing['endMs'])}",
+                segment["ttsText"].strip(),
+                "",
+            ])
+            index += 1
+    (destination / "subtitles.srt").write_text(
+        "\n".join(entries),
+        encoding="utf-8",
+    )
+
+
 def require_safe_id(value, label):
     if value in (".", "..") or Path(value).name != value or "/" in value or "\\" in value:
         raise RuntimeError(f'{label} "{value}" cannot be used as a file or directory name')
@@ -141,6 +172,7 @@ def generate_project(project, destination):
         json.dumps(timeline, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    write_subtitles(destination, project, timeline)
 
 
 def process_file(path):

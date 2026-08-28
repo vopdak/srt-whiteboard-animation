@@ -252,6 +252,7 @@ Mỗi segment dùng `scenes[].segments[].ttsText`, cùng `voice.id` và `voice.s
 ```text
 output/<projectId>/
 ├── timeline.json
+├── subtitles.srt
 └── audio/
     ├── narration.wav
     ├── <sceneId>.wav
@@ -259,7 +260,7 @@ output/<projectId>/
         └── <segmentId>.wav
 ```
 
-`timeline.json` chứa thời gian bắt đầu/kết thúc/duration của project, scene và segment theo millisecond. Nếu một `ttsText` rỗng hoặc Kokoro lỗi, toàn project đó dừng, báo rõ `<sceneId>/<segmentId>` và không publish output mới.
+`timeline.json` chứa thời gian bắt đầu/kết thúc/duration của project, scene và segment theo millisecond. `subtitles.srt` dùng cùng timestamp WAV thực tế và nội dung `ttsText`, vì vậy khớp với narration. Nếu một `ttsText` rỗng hoặc Kokoro lỗi, toàn project đó dừng, báo rõ `<sceneId>/<segmentId>` và không publish output mới.
 
 ### Tạo scene PNG và annotation
 
