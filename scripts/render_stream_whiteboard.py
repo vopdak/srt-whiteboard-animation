@@ -413,8 +413,8 @@ class RegionStreamRenderer:
                     self._wash_brush(writer, color_frames, centers, allowed)
                 cur_ms += color_frames * ms_per_frame
 
-            # 凝视：补到 total_ms，并确保结尾至少停留 0.5s 完整原图
-            gaze_until = max(total_ms, cur_ms + 500)
+            # 凝视：严格补到 total_ms；完整画面的停留时间由 annotation 编排。
+            gaze_until = total_ms
             # 最终帧显示完整原图（凝视）
             self.drawn[...] = self.color_img.astype(np.float32)
             fill_static(gaze_until)

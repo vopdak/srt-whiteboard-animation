@@ -54,6 +54,230 @@ python scripts/prepare_env.py
 
 ## 项目素材结构
 
+### Project JSON đầu vào
+
+Đặt một hoặc nhiều project JSON và các ảnh được tham chiếu theo cấu trúc:
+
+```text
+input/
+└── inflation.json
+
+assets/
+├── inflation/
+│   ├── shopper.png
+│   └── grocery-basket.png
+└── common/
+    └── arrow-up.png
+```
+
+Mỗi `input/*.json` có cấu trúc bắt buộc sau:
+
+```json
+{
+  "projectId": "inflation-explained",
+  "title": "How Inflation Shrinks Your Money",
+  "resolution": { "width": 1920, "height": 1080 },
+  "fps": 30,
+  "voice": { "id": "af_heart", "speed": 0.95 },
+  "timing": {
+    "sceneEndPaddingMs": 500,
+    "completedSceneHoldMs": 500,
+    "minimumElementDurationMs": 800
+  },
+  "scenes": [
+    {
+      "id": "scene-01",
+      "segments": [
+        {
+          "id": "segment-01",
+          "ttsText": "Imagine that you have one hundred dollars.",
+          "elementIds": ["shopper", "money-label"]
+        }
+      ],
+      "elements": [
+        {
+          "id": "shopper",
+          "type": "image",
+          "asset": "assets/inflation/shopper.png",
+          "position": "left",
+          "size": "large",
+          "sequence": 1
+        },
+        {
+          "id": "money-label",
+          "type": "text",
+          "content": "$100 today",
+          "position": "center",
+          "size": "medium",
+          "sequence": 2
+        }
+      ]
+    }
+  ]
+}
+```
+
+- `segments[].ttsText` là lời đọc dùng để tạo TTS ở phase sau.
+- `elements[].content` là text hiển thị trên video và bắt buộc với element `type: "text"`.
+- `segments[].elementIds` xác định các element xuất hiện theo segment; mỗi ID phải tồn tại trong `elements` của cùng scene.
+- `elements[].asset` là đường dẫn ảnh và bắt buộc với element `type: "image"`. Đường dẫn phải bắt đầu bằng `assets/`, phải tồn tại, không được là absolute path và không được chứa `..`.
+
+Chạy validation từ thư mục gốc của repo:
+
+```bash
+python scripts/validate_projects.py
+```
+
+Script tự quét mọi file `.json` trực tiếp trong `input/`. File hợp lệ chỉ in `[VALID] <filename>`; file không hợp lệ in `[INVALID] <filename>`, JSON path và nguyên nhân lỗi. Validation không tạo file hay thư mục output.
+
+### Chạy toàn bộ pipeline bằng một lệnh
+
+Sau khi Kokoro service đã chạy, validate input, tạo TTS, build scene, render và ghép video bằng:
+
+```bash
+python scripts/run_pipeline.py input/inflation-explained.json
+```
+
+Runner log trạng thái `[START]`, `[OK]` hoặc `[FAILED]` cho từng bước và dừng ngay khi có lỗi. Bỏ tham số project để xử lý tất cả file JSON trong `input/`.
+
+### Tạo giọng đọc bằng Kokoro local
+
+Source Kokoro chính thức được clone tại `services/kokoro/kokoro`. Cài source và dependency vào Python environment đang dùng:
+
+```bash
+python -m pip install -e services/kokoro/kokoro
+```
+
+Kokoro dùng `espeak-ng` cho English fallback và một số ngôn ngữ. Trên Windows, cài `espeak-ng` từ trang release chính thức; trên Ubuntu/Debian chạy `sudo apt-get install espeak-ng`.
+
+Khởi động Kokoro service local ở terminal riêng:
+
+```bash
+python services/kokoro/service.py
+```
+
+Service lắng nghe tại `http://127.0.0.1:8880`. Lần tổng hợp đầu tiên có thể tải model Kokoro về máy. Nếu Kokoro chưa được cài, service dừng và in đúng command cài đặt; pipeline không tự chuyển sang provider hoặc voice khác.
+
+Ở terminal khác, xử lý tất cả project JSON hợp lệ trong `input/`:
+
+```bash
+python scripts/generate_tts.py
+```
+
+Hoặc chỉ xử lý một project:
+
+```bash
+python scripts/generate_tts.py input/inflation.json
+```
+
+Mỗi segment dùng `scenes[].segments[].ttsText`, cùng `voice.id` và `voice.speed` trong project. Timestamp được tính từ số frame WAV thực tế. `sceneEndPaddingMs` được thêm vào cuối từng scene. Output có cấu trúc:
+
+```text
+output/<projectId>/
+├── timeline.json
+└── audio/
+    ├── narration.wav
+    ├── <sceneId>.wav
+    └── <sceneId>/
+        └── <segmentId>.wav
+```
+
+`timeline.json` chứa thời gian bắt đầu/kết thúc/duration của project, scene và segment theo millisecond. Nếu một `ttsText` rỗng hoặc Kokoro lỗi, toàn project đó dừng, báo rõ `<sceneId>/<segmentId>` và không publish output mới.
+
+### Tạo scene PNG và annotation
+
+Scene builder cần Pillow:
+
+```bash
+python -m pip install Pillow
+```
+
+Sau khi project đã có đầy đủ `timeline.json` và audio từ bước TTS, xử lý tất cả project trong `input/`:
+
+```bash
+python scripts/build_scenes.py
+```
+
+Hoặc xử lý một project:
+
+```bash
+python scripts/build_scenes.py input/inflation.json
+```
+
+Builder đọc asset `image`, render `content` của element `text`, và chuyển `position`/`size` thành pixel bằng layout 3×3 cố định. Vùng dưới 15% canvas được chừa cho phụ đề. Các element cùng position được chia thành các slot theo `sequence`, không dùng AI hay tọa độ ngẫu nhiên.
+
+Output bổ sung:
+
+```text
+output/<projectId>/scenes/
+├── <sceneId>.png
+└── <sceneId>.annotation.json
+```
+
+Annotation dùng bounding box thực tế, thứ tự `elements[].sequence` và timing segment từ `timeline.json`. `completedSceneHoldMs` được chừa ở cuối scene; builder dừng project và báo lỗi nếu thiếu timeline, narration, scene/segment WAV hoặc asset.
+
+### Render whiteboard animation theo scene
+
+Sau khi đã tạo scene PNG và annotation, render tất cả project:
+
+```bash
+python scripts/render_scenes.py
+```
+
+Hoặc render một project:
+
+```bash
+python scripts/render_scenes.py input/inflation.json
+```
+
+Command tái sử dụng `render_stream_whiteboard.py`, truyền FPS từ project và duration từ timeline, sau đó render `ink` rồi `color` với hình bàn tay `assets/drawing-hand.png`. Mỗi scene tạo:
+
+```text
+output/<projectId>/scenes/<sceneId>-whiteboard.mp4
+```
+
+Video chưa ghép narration. Scene được bỏ qua nếu video hiện có mới hơn cả PNG và annotation; thay đổi một trong hai input sẽ render lại scene đó.
+
+### Ghép narration và video hoàn chỉnh
+
+Composer yêu cầu FFmpeg có trong `PATH`. Sau khi cài, kiểm tra:
+
+```bash
+ffmpeg -version
+```
+
+Ghép tất cả project trong `input/`:
+
+```bash
+python scripts/compose_video.py
+```
+
+Hoặc ghép một project:
+
+```bash
+python scripts/compose_video.py input/inflation.json
+```
+
+Mỗi scene được chuẩn hóa theo resolution/FPS của project, kéo dài frame cuối nếu animation ngắn hơn timeline, cắt phần video dư, rồi ghép scene WAV bằng AAC 48 kHz. Composer không dùng `-shortest`; khoảng nghỉ `sceneEndPaddingMs` đã nằm trong scene WAV và timeline.
+
+Output:
+
+```text
+output/<projectId>/
+├── final.mp4
+└── scenes/
+    ├── <sceneId>-whiteboard.mp4
+    └── <sceneId>-with-audio.mp4
+```
+
+Video dùng H.264, AAC và `yuv420p`. Kiểm tra file hoàn chỉnh:
+
+```bash
+ffmpeg -v error -i output/<projectId>/final.mp4 -f null -
+```
+
+Nếu command không in lỗi và trả exit code `0`, FFmpeg đã đọc được toàn bộ video.
+
 ```text
 assets/whiteboard/<项目名>/
 ├── scene-01-<名称>.png
