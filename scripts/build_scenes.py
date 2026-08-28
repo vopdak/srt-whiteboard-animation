@@ -23,6 +23,7 @@ POSITIONS = {
     "bottom-left": (0, 2), "bottom-center": (1, 2), "bottom-right": (2, 2),
 }
 SIZE_FACTORS = {"small": 0.52, "medium": 0.72, "large": 0.92}
+IMAGE_SCALE = 2
 
 
 def safe_id(value, label):
@@ -138,7 +139,11 @@ def layout_scene(project, scene, canvas):
                 asset_path = (ROOT / element["asset"]).resolve()
                 if not asset_path.is_file():
                     raise RuntimeError(f'{scene["id"]}/{element["id"]}: missing asset "{element["asset"]}"')
-                visual = fit_image(asset_path, max_width, max_height)
+                visual = fit_image(
+                    asset_path,
+                    max_width * IMAGE_SCALE,
+                    max_height * IMAGE_SCALE,
+                )
             else:
                 visual = render_text(
                     element["content"], element["size"], max_width, max_height, height

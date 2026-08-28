@@ -1,5 +1,5 @@
 {
-  "projectId": "inflation-explained",
+  "projectId": "inflation-explained-3min",
   "title": "How Inflation Shrinks Your Money",
   "resolution": {
     "width": 1920,
@@ -21,24 +21,24 @@
       "segments": [
         {
           "id": "segment-01",
-          "ttsText": "Imagine you have one hundred dollars.",
+          "ttsText": "Imagine you have one hundred dollars in your wallet. Today, that money can buy a full basket of groceries: bread, milk, eggs, fruit, and a few other everyday items.",
           "elementIds": [
-            "shopper",
-            "money-label"
+            "shopper-01",
+            "money-label-01",
+            "grocery-basket-01"
           ]
         },
         {
           "id": "segment-02",
-          "ttsText": "Today, that money can buy a full basket of groceries.",
+          "ttsText": "The number printed on your money does not change. But what that money can buy can change over time.",
           "elementIds": [
-            "grocery-basket",
-            "today-price"
+            "purchasing-power-label-01"
           ]
         }
       ],
       "elements": [
         {
-          "id": "shopper",
+          "id": "shopper-01",
           "type": "image",
           "asset": "assets/inflation/shopper.png",
           "position": "left",
@@ -46,7 +46,7 @@
           "sequence": 1
         },
         {
-          "id": "money-label",
+          "id": "money-label-01",
           "type": "text",
           "content": "$100",
           "position": "top-center",
@@ -54,7 +54,7 @@
           "sequence": 2
         },
         {
-          "id": "grocery-basket",
+          "id": "grocery-basket-01",
           "type": "image",
           "asset": "assets/inflation/grocery-basket.png",
           "position": "right",
@@ -62,11 +62,11 @@
           "sequence": 3
         },
         {
-          "id": "today-price",
+          "id": "purchasing-power-label-01",
           "type": "text",
-          "content": "$100 today",
-          "position": "top-right",
-          "size": "medium",
+          "content": "Purchasing power",
+          "position": "bottom-center",
+          "size": "large",
           "sequence": 4
         }
       ]
@@ -76,47 +76,35 @@
       "segments": [
         {
           "id": "segment-01",
-          "ttsText": "If prices rise by three percent, the same basket may cost one hundred and three dollars next year.",
+          "ttsText": "Inflation means that the general level of prices is rising. It does not mean every product becomes more expensive at exactly the same rate. Some prices rise quickly, some slowly, and a few may even fall.",
           "elementIds": [
-            "basket-today",
-            "increase-arrow",
-            "basket-next-year",
-            "future-price"
+            "price-tags-02"
+          ]
+        },
+        {
+          "id": "segment-02",
+          "ttsText": "What matters is the overall trend: on average, everyday goods and services cost more than before.",
+          "elementIds": [
+            "inflation-label-02"
           ]
         }
       ],
       "elements": [
         {
-          "id": "basket-today",
+          "id": "price-tags-02",
           "type": "image",
-          "asset": "assets/inflation/grocery-basket.png",
-          "position": "left",
+          "asset": "assets/inflation/price-tags.png",
+          "position": "center",
           "size": "large",
           "sequence": 1
         },
         {
-          "id": "increase-arrow",
-          "type": "image",
-          "asset": "assets/common/arrow-up.png",
-          "position": "center",
-          "size": "small",
-          "sequence": 2
-        },
-        {
-          "id": "basket-next-year",
-          "type": "image",
-          "asset": "assets/inflation/grocery-basket.png",
-          "position": "right",
-          "size": "large",
-          "sequence": 3
-        },
-        {
-          "id": "future-price",
+          "id": "inflation-label-02",
           "type": "text",
-          "content": "$103 next year",
-          "position": "top-right",
-          "size": "medium",
-          "sequence": 4
+          "content": "Average prices rise",
+          "position": "bottom-center",
+          "size": "large",
+          "sequence": 2
         }
       ]
     },
@@ -125,53 +113,324 @@
       "segments": [
         {
           "id": "segment-01",
-          "ttsText": "Your bank balance is still one hundred dollars, but it can buy less than before.",
+          "ttsText": "Suppose inflation is three percent for one year. A basket that costs one hundred dollars today may cost about one hundred and three dollars next year.",
           "elementIds": [
-            "wallet",
-            "less-groceries",
-            "conclusion"
+            "basket-today-03",
+            "price-today-03",
+            "arrow-up-03",
+            "basket-future-03",
+            "price-future-03"
           ]
         },
         {
           "id": "segment-02",
-          "ttsText": "That is how inflation reduces your purchasing power.",
+          "ttsText": "If you still have only one hundred dollars, you cannot buy the same full basket. Your money has lost some purchasing power.",
           "elementIds": [
-            "inflation-label"
+            "small-basket-03",
+            "buys-less-03"
           ]
         }
       ],
       "elements": [
         {
-          "id": "wallet",
+          "id": "basket-today-03",
           "type": "image",
-          "asset": "assets/common/wallet.png",
+          "asset": "assets/inflation/grocery-basket.png",
           "position": "left",
           "size": "medium",
           "sequence": 1
         },
         {
-          "id": "less-groceries",
-          "type": "image",
-          "asset": "assets/inflation/small-grocery-basket.png",
-          "position": "right",
+          "id": "price-today-03",
+          "type": "text",
+          "content": "$100 today",
+          "position": "top-left",
           "size": "medium",
           "sequence": 2
         },
         {
-          "id": "conclusion",
+          "id": "arrow-up-03",
+          "type": "image",
+          "asset": "assets/common/arrow-up.png",
+          "position": "center",
+          "size": "small",
+          "sequence": 3
+        },
+        {
+          "id": "basket-future-03",
+          "type": "image",
+          "asset": "assets/inflation/grocery-basket.png",
+          "position": "right",
+          "size": "medium",
+          "sequence": 4
+        },
+        {
+          "id": "price-future-03",
+          "type": "text",
+          "content": "$103 next year",
+          "position": "top-right",
+          "size": "medium",
+          "sequence": 5
+        },
+        {
+          "id": "small-basket-03",
+          "type": "image",
+          "asset": "assets/inflation/small-grocery-basket.png",
+          "position": "bottom-right",
+          "size": "small",
+          "sequence": 6
+        },
+        {
+          "id": "buys-less-03",
           "type": "text",
           "content": "$100 buys less",
-          "position": "center",
+          "position": "bottom-left",
+          "size": "large",
+          "sequence": 7
+        }
+      ]
+    },
+    {
+      "id": "scene-04",
+      "segments": [
+        {
+          "id": "segment-01",
+          "ttsText": "A small annual increase may not sound serious, but inflation compounds. At three percent per year, prices would be about sixteen percent higher after five years.",
+          "elementIds": [
+            "calendar-years-04",
+            "five-years-04"
+          ]
+        },
+        {
+          "id": "segment-02",
+          "ttsText": "After ten years, the increase would be roughly thirty-four percent. Something that costs one hundred dollars today could cost about one hundred and thirty-four dollars.",
+          "elementIds": [
+            "ten-years-04",
+            "future-cost-04"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "id": "calendar-years-04",
+          "type": "image",
+          "asset": "assets/inflation/calendar-years.png",
+          "position": "left",
+          "size": "large",
+          "sequence": 1
+        },
+        {
+          "id": "five-years-04",
+          "type": "text",
+          "content": "5 years: about +16%",
+          "position": "top-right",
+          "size": "medium",
+          "sequence": 2
+        },
+        {
+          "id": "ten-years-04",
+          "type": "text",
+          "content": "10 years: about +34%",
+          "position": "right",
           "size": "medium",
           "sequence": 3
         },
         {
-          "id": "inflation-label",
+          "id": "future-cost-04",
           "type": "text",
-          "content": "Inflation reduces purchasing power",
+          "content": "$100 becomes about $134",
           "position": "bottom-center",
           "size": "large",
           "sequence": 4
+        }
+      ]
+    },
+    {
+      "id": "scene-05",
+      "segments": [
+        {
+          "id": "segment-01",
+          "ttsText": "Inflation affects people differently. If your income rises as fast as prices, your purchasing power may stay similar. But if your income grows more slowly, your budget becomes tighter.",
+          "elementIds": [
+            "income-vs-prices-05",
+            "tight-budget-05"
+          ]
+        },
+        {
+          "id": "segment-02",
+          "ttsText": "People living on fixed incomes can feel this pressure strongly because the same monthly amount must cover increasingly expensive needs.",
+          "elementIds": [
+            "fixed-income-person-05"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "id": "income-vs-prices-05",
+          "type": "image",
+          "asset": "assets/inflation/income-vs-prices.png",
+          "position": "left",
+          "size": "large",
+          "sequence": 1
+        },
+        {
+          "id": "tight-budget-05",
+          "type": "text",
+          "content": "Income grows slower than prices",
+          "position": "bottom-center",
+          "size": "large",
+          "sequence": 2
+        },
+        {
+          "id": "fixed-income-person-05",
+          "type": "image",
+          "asset": "assets/inflation/fixed-income-person.png",
+          "position": "right",
+          "size": "large",
+          "sequence": 3
+        }
+      ]
+    },
+    {
+      "id": "scene-06",
+      "segments": [
+        {
+          "id": "segment-01",
+          "ttsText": "Cash savings are also affected. If money sits still while prices rise, its real value gradually falls. The balance shown by the bank may be unchanged, but the amount of goods it can purchase is smaller.",
+          "elementIds": [
+            "savings-jar-06",
+            "money-label-06",
+            "small-basket-06"
+          ]
+        },
+        {
+          "id": "segment-02",
+          "ttsText": "That is why people compare the return on their savings with the inflation rate, not only with zero.",
+          "elementIds": [
+            "real-value-label-06"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "id": "savings-jar-06",
+          "type": "image",
+          "asset": "assets/inflation/savings-jar.png",
+          "position": "left",
+          "size": "large",
+          "sequence": 1
+        },
+        {
+          "id": "money-label-06",
+          "type": "text",
+          "content": "Same balance",
+          "position": "top-left",
+          "size": "medium",
+          "sequence": 2
+        },
+        {
+          "id": "small-basket-06",
+          "type": "image",
+          "asset": "assets/inflation/small-grocery-basket.png",
+          "position": "right",
+          "size": "large",
+          "sequence": 3
+        },
+        {
+          "id": "real-value-label-06",
+          "type": "text",
+          "content": "Lower real value",
+          "position": "bottom-center",
+          "size": "large",
+          "sequence": 4
+        }
+      ]
+    },
+    {
+      "id": "scene-07",
+      "segments": [
+        {
+          "id": "segment-01",
+          "ttsText": "You cannot control inflation, but you can plan for it. Track how your essential costs change, review your budget regularly, and avoid assuming that today's prices will stay the same forever.",
+          "elementIds": [
+            "budget-checklist-07",
+            "plan-label-07"
+          ]
+        },
+        {
+          "id": "segment-02",
+          "ttsText": "When setting long-term savings goals, include inflation in the calculation. One hundred dollars in the future will usually not buy what one hundred dollars buys today.",
+          "elementIds": [
+            "wallet-07",
+            "arrow-up-07",
+            "future-label-07"
+          ]
+        },
+        {
+          "id": "segment-03",
+          "ttsText": "Inflation does not literally remove money from your wallet. It quietly reduces what your money can do. That shrinking purchasing power is the real cost of rising prices.",
+          "elementIds": [
+            "small-basket-07",
+            "conclusion-07"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "id": "budget-checklist-07",
+          "type": "image",
+          "asset": "assets/inflation/budget-checklist.png",
+          "position": "center",
+          "size": "large",
+          "sequence": 1
+        },
+        {
+          "id": "plan-label-07",
+          "type": "text",
+          "content": "Plan for rising costs",
+          "position": "top-center",
+          "size": "large",
+          "sequence": 2
+        },
+        {
+          "id": "wallet-07",
+          "type": "image",
+          "asset": "assets/common/wallet.png",
+          "position": "bottom-left",
+          "size": "medium",
+          "sequence": 3
+        },
+        {
+          "id": "arrow-up-07",
+          "type": "image",
+          "asset": "assets/common/arrow-up.png",
+          "position": "center",
+          "size": "small",
+          "sequence": 4
+        },
+        {
+          "id": "future-label-07",
+          "type": "text",
+          "content": "Future money buys less",
+          "position": "bottom-right",
+          "size": "medium",
+          "sequence": 5
+        },
+        {
+          "id": "small-basket-07",
+          "type": "image",
+          "asset": "assets/inflation/small-grocery-basket.png",
+          "position": "right",
+          "size": "small",
+          "sequence": 6
+        },
+        {
+          "id": "conclusion-07",
+          "type": "text",
+          "content": "Inflation shrinks purchasing power",
+          "position": "bottom-center",
+          "size": "large",
+          "sequence": 7
         }
       ]
     }
